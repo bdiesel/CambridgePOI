@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>Cambridge MA</title>
+    <link rel="stylesheet" href="leaflet.css" />
+    <!--[if lte IE 8]><link rel="stylesheet" href="leaflet.ie.css" /><![endif]-->
+
+    <script src="leaflet.js"></script>
+    <script src="wax.leaf.min.js"></script>
+    
+
+    
+    
+  </head>
+  <body>
+    <div id="mapbox" style="width: 100%; height: 100%"></div>
+    <script type="text/javascript">
+
+    // Define the map to use from MapBox
+    // This is the TileJSON endpoint copied from the embed button on your map
+    var url = 'http://api.tiles.mapbox.com/v3/mapbox.mapbox-streets.jsonp';
+
+    // Make a new Leaflet map in your container div
+    var map = new L.Map('mapbox')  // container's id="mapbox"
+
+    // Center the map on Cambridge, MA, at zoom 15
+    .setView(new L.LatLng( 42.3603, -71.0893), 15);
+
+    // Get metadata about the map from MapBox
+    wax.tilejson(url, function(tilejson) {
+        // Add MapBox Streets as a base layer
+        map.addLayer(new wax.leaf.connector(tilejson));
+    });
+    </script>
+    
+    
+    <script src="features.json"></script>
+    <script type="text/javascript">
+    // Define a GeoJSON data layer
+    var geojsonLayer = new L.GeoJSON(data);
+
+    // Display the name property on click
+    geojsonLayer.on('featureparse', function (e) {
+        if (e.properties && e.properties.name){
+            e.layer.bindPopup(e.properties.name);
+        }
+    });
+
+    // Populate our geojson layer with data
+    geojsonLayer.addGeoJSON(data);
+
+    // Add the GeoJSON layer
+    map.addLayer(geojsonLayer);
+    </script>
+    
+  </body>
+</html>
